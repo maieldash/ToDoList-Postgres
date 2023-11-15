@@ -1,0 +1,72 @@
+<%- include("partials/header.ejs") %>
+<div class="header" id="heading">
+    
+    <% if(locals.curListTitle){
+            if(curListTitle===""){
+                %> <h1> <%= today.slice(0,10); %> </h1>
+            <%
+            }
+            else{
+                %> <h1> <%= curListTitle %> </h1>
+                <%
+            }
+        }
+    else{
+        %>
+        <h1> <%= today.slice(0,10); %> </h1>
+    <% } %>
+    
+      
+    
+  </div>
+<div class="main d-flex flex-column flex-md-row  gap-4 pb-md-5 align-items-center justify-content-center  m-0 p-0">
+        <div class="list-group">  
+            <% for (var x = 0; x < selectedList.length; x++){
+                console.log(selectedList[x].title);
+                %>
+                
+                <label class="d-flex gap-3 list-group-item list-group-item-action list-group-item-secondary">
+                    <input class="form-check-input flex-shrink-0" name="checker" type="checkbox" style="font-size: 1.375em;">
+                    <span class="pt-1 form-checked-content">
+                        <strong class="taskTitle"> <%= selectedList[x].title %> </strong>
+                        <small class="mt-1 d-block text-body-secondary">
+                        <img class="bi pb-1" width="20" height="20" src="/images/calendar-event.svg"> 
+                        <span class="px-2 pt-3 mb-0"><%= selectedList[x].deadline.toString().slice(0,21)%></span>
+                        </small>
+                        <small class="mt-1 d-block text-body-secondary">
+                        <img class="bi pb-1" width="16" height="20" src="/images/card-checklist.svg"> 
+                        <span class="px-2 pt-3 mb-0"><%= selectedList[x].description %></span>
+                        </small>
+                        
+                    </span>
+                </label>
+                
+                <%
+            } %>
+            
+            <label class="list-group-item d-flex gap-3 bg-body-tertiary">
+                <form class="item" action="/addTask" method="post">
+                    
+                    <button class="btn btn-outline-dark rounded-circle p-3 lh-1" type="button" data-bs-toggle="modal" data-bs-target="#newTaskModal">
+                    <img class="bi d-block mx-auto" width="24" height="24" src="/images/plus.svg">
+                    <span class="visually-hidden">Add Task</span>
+                    </button>
+
+                </form>
+
+                </label>
+            <!-- <a href="#" class="list-group-item list-group-item-action list-group-item-success">A simple success list group item</a>
+            <a href="#" class="list-group-item list-group-item-action list-group-item-danger">A simple danger list group item</a>
+            <a href="#" class="list-group-item list-group-item-action list-group-item-warning">A simple warning list group item</a>
+            <a href="#" class="list-group-item list-group-item-action list-group-item-info">A simple info list group item</a>
+            <a href="#" class="list-group-item list-group-item-action list-group-item-light">A simple light list group item</a>
+            <a href="#" class="list-group-item list-group-item-action list-group-item-dark">A simple dark list group item</a> -->
+        </div> 
+</div>
+
+<%- include("partials/footer.ejs") %>
+
+
+</script>
+</body>
+</html>

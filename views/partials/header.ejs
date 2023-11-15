@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-do List</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">  
+    <script type = "text/JavaScript"src = "https://MomentJS.com/downloads/moment.js"></script>
+</script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/3.1.3/js/bootstrap-datetimepicker.min.js"></script>
+
+  </head>
+<body>
+    
+    <header>
+        <div class="px-3 py-2 border-bottom">
+          <div class="container">
+            <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+              <a class="d-flex align-items-center my-2 my-lg-0 me-lg-auto text-black text-decoration-none" data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions">
+                <img src="/images/list.svg" width="27" height="27">
+              </a>
+
+              <div class="offcanvas offcanvas-start" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions" aria-labelledby="offcanvasWithBothOptionsLabel">
+                <div class="offcanvas-header justify-content-end">
+                  <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body">
+                    <div>
+                        <ul class="list-unstyled ps-0" >
+                            <li><a href="/today" onclick="updateHomePage(this)" class="customList my-2 mx-2 link-body-emphasis d-inline-flex text-decoration-none rounded" ><img class="mx-2 "src="/images/today.svg" width="27" height="27"> Today</a></li>
+                            <li><a href="/upcoming" class="customList my-2 mx-2 link-body-emphasis d-inline-flex text-decoration-none rounded"><img class="mx-2 " src="/images/upcoming.svg" width="27" height="27"> Upcoming</a></li>
+                            <li class="border-top my-3"></li>
+                            <li class="mb-1">
+                                <button class="fw-normal btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#home-collapse" aria-expanded="true">
+                                <img src="/images/arrowDown.svg" class="px-2">Custom Lists
+                                </button>
+                                <div class="collapse show" id="home-collapse">
+                                  <ul class="btn-toggle-nav px-2 mx-5 list-unstyled fw-normal pb-1 small">
+                                    <% if(locals.listsTitles){
+                                      for(var i = 2; i < listsTitles.length; i++){ %>
+                                        <li><a href="/list?list=<%= i + 1%>" class="customList py-2 link-body-emphasis d-inline-flex text-decoration-none rounded"> <%= listsTitles[i]  %> </a></li>  
+                                        
+                                      <% }} %>
+                                  </ul>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+              </div>
+              <form id="search-form" class="search-form col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
+                <input type="search" id="search" class="form-control" placeholder="Search" aria-label="Search">
+              </form>
+
+              <form id="addTask-form" action="/addTask" method="POST">
+              <div class="modal fade" id="newTaskModal" tabindex="-1" aria-labelledby="newTaskModalLabel" aria-hidden="true" style="display: none;">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="newTaskModalLabel">Add a new task</h1>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      
+                        <div class="mb-3">
+                          <label for="task-title" class="col-form-label" >Task Title:</label>
+                          <input type="text" class="form-control" name="task-title" required>
+                        </div>
+                        <div class="mb-3">
+                          <label for="task-dateTime" class="col-form-label" >Deadline:</label>
+                          <input id="dataPickerId" type="datetime-local" class="form-control" name="task-dateTime" min="<%= today %>" required>
+                        </div>
+                        <div class="mb-3">
+                          <label for="task-description" class="col-form-label">description:</label>
+                          <input type="text" class="form-control" name="task-description">
+                        </div>
+                        <div class="mb-3">
+                          <label for="task-priority" class="col-form-label">Priority:</label>
+                            <select name ="task-priority" class="form-select" aria-label="Default select example">
+                              <option selected value="0">None</option>
+                              <option value="1">Low</option>
+                              <option value="2">medium</option>
+                              <option value="3">High</option>
+                            </select>
+                          </div>
+                        <div class="mb-3">
+                          <label for="task-list" class="col-form-label">List:</label>
+                          <select name ="task-list" class="form-select" aria-label="Default select example">
+                            <option selected value="none">None</option>
+                            <% if(locals.listsTitles){
+                                  for(var i = 2; i < listsTitles.length; i++){ %>
+                                      <option value="<%= i + 1%>"> <%= listsTitles[i] %> </option>
+                                        
+                                    <% } 
+                                  }
+                                %> 
+                          </select>
+                        </div>    
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                      <button  type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+
+                <div class="modal fade" id="newListModal" tabindex="-1" aria-labelledby="newListModalLabel" aria-hidden="true" style="display: none;">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="newListModalLabel">Add a new List</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        <form id="addList-form" action="/addList" method="POST">
+                          <div class="mb-3">
+                            <label for="list-title" class="col-form-label" >List Title:</label>
+                            <input type="text" class="form-control" name="list-title" required>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button  type="submit" class="btn btn-primary">Save changes</button>
+                          </div>
+                        </form>
+                      </div>
+                      
+                    </div>
+                  </div>
+                </div>
+
+              <ul class="nav col-12 col-lg-auto my-2 justify-content-center my-md-0 text-small">
+                <li>
+                  <a href="/" id="house" class="nav-link text-secondary">
+                    <img class="bi d-block mx-auto mb-1" width="24" height="24" src="/images/house.svg"> 
+                  </a>
+                </li>
+                <li>
+                    <div class="dropdown">
+                        <a href="#" class="nav-link text-secondary" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img class="bi d-block mx-auto mb-1" width="24" height="24" src="/images/plus.svg"> 
+                          </a>
+                        <ul class="dropdown-menu">
+                          <li><button class="dropdown-item"  type="button" id = "taskItemBtn" data-bs-toggle="modal" data-bs-target="#newTaskModal" >Add Task</button></li>
+                          <li>
+                            <button type="button" id = "listItemBtn" class="dropdown-item"  data-bs-toggle="modal" data-bs-target="#newListModal">Add List</button>
+                          </li>
+                        </ul>
+                      </div>
+                    
+                  </li>
+                <li>
+                  <a href="#" class="nav-link text-secondary">
+                    <img class="bi d-block mx-auto mb-1" width="24" height="24" src="/images/bell.svg"> 
+                  </a>
+                </li>
+                <li>
+                  <a href="#" class="nav-link text-secondary">
+                    <img class="bi d-block mx-auto mb-1" width="24" height="24" src="/images/profile.svg"> 
+                  </a>
+                </li>
+              </ul>
+              
+            </div>
+          </div>
+        </div>
+      </header>
